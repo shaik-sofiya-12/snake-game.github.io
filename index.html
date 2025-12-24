@@ -1,114 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game 🐍 | Cosmic Edition</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snake Game 🐍 | Cosmic Edition</title>
+
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <!-- Cosmic Background -->
-    <div class="cosmic-bg"></div>
 
-    <!-- Audio Controls -->
-    <div class="audio-controls">
-        <button class="audio-btn" id="musicToggle">🎵</button>
-        <button class="audio-btn" id="sfxToggle">🔊</button>
-        <input type="range" min="0" max="100" value="70" class="volume-slider" id="volumeSlider">
+<!-- Cosmic Background Elements -->
+<div class="cosmic-nebula"></div>
+<div class="wormhole-grid"></div>
+<div id="starsContainer"></div>
+<div id="lasersContainer"></div>
+<div id="particlesContainer"></div>
+
+<!-- Audio Controls -->
+<div class="audio-controls">
+  <button class="audio-btn" onclick="toggleMusic()" id="musicToggle">
+    🎵
+  </button>
+  <button class="audio-btn" onclick="toggleSFX()" id="sfxToggle">
+    🔊
+  </button>
+  <input type="range" min="0" max="100" value="70" class="volume-slider"
+         oninput="changeVolume(this.value)" id="volumeSlider">
+</div>
+
+<div class="card">
+
+<!-- ===================== HOME SCREEN ===================== -->
+<div id="home">
+  <h1>🐍 COSMIC SNAKE</h1>
+  <div class="subtitle">INTERGALACTIC ARCADE ADVENTURE</div>
+
+  <div class="menu">
+    <button onclick="showHome()">
+      <span>🚀</span> HOME
+    </button>
+    <button onclick="showAbout()">
+      <span>🌌</span> ABOUT
+    </button>
+    <button onclick="showHelp()">
+      <span>❓</span> HELP
+    </button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="score-display">
+    🌟 HIGH SCORE: <span id="homeHigh">0</span>
+  </div>
+
+  <h2 style="text-align: center; color: #ffff00; margin: 25px 0; text-shadow: 0 0 10px #ffff00;">
+    SELECT DIFFICULTY
+  </h2>
+  <div class="levels">
+    <button class="easy" onclick="startGame(150)">
+      <span>🌌</span> NEBULA (EASY)
+    </button>
+    <button class="medium" onclick="startGame(100)">
+      <span>⚡</span> QUASAR (MEDIUM)
+    </button>
+    <button class="hard" onclick="startGame(70)">
+      <span>🔥</span> SUPERNOVA (HARD)
+    </button>
+  </div>
+</div>
+
+<!-- ===================== ABOUT SCREEN ===================== -->
+<div id="about" class="hidden">
+  <div class="screen-content">
+    <h2>🌌 ABOUT COSMIC SNAKE</h2>
+    <div class="divider"></div>
+    <p>Welcome to <strong>Cosmic Snake</strong> - an intergalactic twist on the classic snake game!</p>
+
+    <p>This isn't your ordinary snake game. We've taken the classic gameplay and launched it into a cosmic dimension with:</p>
+
+    <ul>
+      <li>✨ <strong>Cosmic Visuals</strong> - Nebula clouds, wormholes, and laser beams</li>
+      <li>🎵 <strong>Synthesized Audio</strong> - Space-themed music and sound effects</li>
+      <li>🌟 <strong>High Score Tracking</strong> - Compete across the galaxy</li>
+      <li>⚡ <strong>Smooth 60fps</strong> - Butter-smooth gameplay</li>
+      <li>🎮 <strong>Modern Controls</strong> - Keyboard arrows & mobile swipe</li>
+      <li>🚀 <strong>Space Difficulty</strong> - Nebula, Quasar, and Supernova modes</li>
+    </ul>
+
+    <p>All sounds are generated using the Web Audio API - no external files needed!</p>
+
+    <div class="back" onclick="showHome()">
+      <span>←</span> BACK TO HOME
     </div>
+  </div>
+</div>
 
-    <!-- Main Game Container -->
-    <div class="game-container" id="gameContainer">
-        <!-- Home Screen -->
-        <div class="screen" id="homeScreen">
-            <h1>🐍 COSMIC SNAKE</h1>
-            <div class="subtitle">INTERGALACTIC ARCADE ADVENTURE</div>
+<!-- ===================== HELP SCREEN ===================== -->
+<div id="help" class="hidden">
+  <div class="screen-content">
+    <h2>❓ HOW TO PLAY</h2>
+    <div class="divider"></div>
 
-            <div class="menu">
-                <button onclick="showScreen('homeScreen')">🏠 HOME</button>
-                <button onclick="showScreen('aboutScreen')">🌌 ABOUT</button>
-                <button onclick="showScreen('helpScreen')">❓ HELP</button>
-            </div>
+    <ul>
+      <li>🎮 <strong>CONTROLS</strong>: Use arrow keys (↑ ↓ ← →) to navigate your cosmic snake</li>
+      <li>📱 <strong>MOBILE</strong>: Swipe in any direction on the screen</li>
+      <li>⏸️ <strong>PAUSE</strong>: Press SPACE bar to pause/resume the game</li>
+      <li>🍎 <strong>OBJECTIVE</strong>: Eat the glowing cosmic apples to grow longer</li>
+      <li>💥 <strong>AVOID</strong>: Don't hit the walls or your own tail</li>
+      <li>🎵 <strong>AUDIO</strong>: Toggle music and sound effects with the top-right controls</li>
+      <li>🌟 <strong>SCORING</strong>: Each apple gives +1 point. Try to beat your high score!</li>
+      <li>🚀 <strong>DIFFICULTY</strong>:
+        <br>• <span style="color:#00f7ff">Nebula (Easy)</span> - Slow & steady
+        <br>• <span style="color:#ff00ff">Quasar (Medium)</span> - Balanced speed
+        <br>• <span style="color:#ffff00">Supernova (Hard)</span> - Fast & challenging
+      </li>
+    </ul>
 
-            <div class="divider"></div>
+    <p style="color: #ffff00; margin-top: 20px; font-weight: bold;">
+      💡 TIP: The longer your snake gets, the more challenging it becomes to avoid collisions!
+    </p>
 
-            <div class="score-display">
-                🌟 HIGH SCORE: <span id="highScoreDisplay">0</span>
-            </div>
-
-            <h2>SELECT DIFFICULTY</h2>
-            <div class="levels">
-                <button class="easy" onclick="startGame(150)">🌌 NEBULA (EASY)</button>
-                <button class="medium" onclick="startGame(100)">⚡ QUASAR (MEDIUM)</button>
-                <button class="hard" onclick="startGame(70)">🔥 SUPERNOVA (HARD)</button>
-            </div>
-        </div>
-
-        <!-- About Screen -->
-        <div class="screen hidden" id="aboutScreen">
-            <h2>🌌 ABOUT COSMIC SNAKE</h2>
-            <div class="divider"></div>
-            <p>An intergalactic twist on the classic snake game!</p>
-            <ul>
-                <li>✨ Cosmic visuals & effects</li>
-                <li>🎵 Synthesized space music</li>
-                <li>🌟 High score tracking</li>
-                <li>⚡ Smooth 60fps gameplay</li>
-                <li>🎮 Keyboard & touch controls</li>
-            </ul>
-            <button class="back-btn" onclick="showScreen('homeScreen')">← BACK</button>
-        </div>
-
-        <!-- Help Screen -->
-        <div class="screen hidden" id="helpScreen">
-            <h2>❓ HOW TO PLAY</h2>
-            <div class="divider"></div>
-            <ul>
-                <li>🎮 Use ARROW KEYS to move</li>
-                <li>📱 SWIPE on mobile devices</li>
-                <li>⏸️ Press SPACE to pause</li>
-                <li>🍎 Eat apples to grow</li>
-                <li>💥 Avoid walls & yourself</li>
-                <li>🎵 Toggle audio with controls</li>
-            </ul>
-            <button class="back-btn" onclick="showScreen('homeScreen')">← BACK</button>
-        </div>
-
-        <!-- Game Screen -->
-        <div class="screen hidden" id="gameScreen">
-            <div class="score-display">
-                🎯 SCORE: <span id="currentScore">0</span> |
-                🌟 HIGH: <span id="gameHighScore">0</span>
-            </div>
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
-            <button class="back-btn" onclick="exitGame()">← EXIT GAME</button>
-        </div>
-
-        <!-- Game Over Screen -->
-        <div class="screen hidden" id="gameOverScreen">
-            <h1 class="game-over">💀 GAME OVER</h1>
-            <div class="divider"></div>
-            <p class="final-score">YOUR SCORE: <span id="finalScore">0</span></p>
-            <p id="newHighScoreMsg" class="hidden">🎉 NEW HIGH SCORE! 🎉</p>
-            <div class="game-over-buttons">
-                <button class="play-again" onclick="playAgain()">🔁 PLAY AGAIN</button>
-                <button class="home-btn" onclick="showScreen('homeScreen')">🏠 MAIN MENU</button>
-            </div>
-        </div>
+    <div class="back" onclick="showHome()">
+      <span>←</span> BACK TO HOME
     </div>
+  </div>
+</div>
 
-    <!-- Load JavaScript Files -->
-    <script src="audio.js"></script>
-    <script src="game.js"></script>
-    <script src="screens.js"></script>
+<!-- ===================== GAME SCREEN ===================== -->
+<div id="gameScreen" class="hidden">
+  <div class="score-display">
+    🎯 SCORE: <span id="score">0</span> |
+    🌟 HIGH: <span id="highScore">0</span>
+  </div>
+  <canvas id="game" width="400" height="400"></canvas>
+  <div class="back" onclick="exitGame()">
+    <span>←</span> RETURN TO HOME
+  </div>
+</div>
 
-    <!-- Initialize Game -->
-    <script>
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            initGame();
-            loadHighScore();
-        });
-    </script>
+<!-- ===================== GAME OVER SCREEN ===================== -->
+<div id="gameOverScreen" class="hidden">
+  <h1 class="game-over-title">💀 GAME OVER</h1>
+  <div class="divider"></div>
+  <p style="font-size: 32px; margin: 25px 0; color: #00f7ff; font-weight: bold;">
+    YOUR SCORE: <span id="finalScore">0</span>
+  </p>
+  <p id="newHighScore" style="color: #ffff00; display: none; font-size: 26px; font-weight: bold;">
+    🎉 INTERGALACTIC HIGH SCORE! 🎉
+  </p>
+  <div style="margin-top: 40px;">
+    <button onclick="playAgain()" class="action-btn play-again">
+      🔁 PLAY AGAIN
+    </button>
+    <button onclick="goHome()" class="action-btn go-home">
+      🏠 MAIN MENU
+    </button>
+  </div>
+</div>
+
+</div>
+
+
+<!-- JS FILES (ORDER IS IMPORTANT) -->
+<script src="background.js"></script>
+<script src="audio.js"></script>
+<script src="screen.js"></script>
+<script src="game.js"></script>
+
 </body>
 </html>
