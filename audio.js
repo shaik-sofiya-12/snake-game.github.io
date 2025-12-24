@@ -1,258 +1,90 @@
-/* ===================== AUDIO SYSTEM ===================== */
-
-// Audio state
-let audioContext;
-let masterGain;
-let musicEnabled = true;
-let sfxEnabled = true;
-let musicPlaying = false;
-
-// Initialize audio
-function initAudio() {
-    try {
-        // Create audio context
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-        // Create master volume control
-        masterGain = audioContext.createGain();
-        masterGain.connect(audioContext.destination);
-        masterGain.gain.value = 0.7;
-
-        console.log("Audio system initialized");
-        setupAudioControls();
-
-    } catch (error) {
-        console.log("Audio initialization failed:", error);
-        return false;
-    }
-    return true;
-}
-
-// Setup audio control buttons
-function setupAudioControls() {
-    const musicBtn = document.getElementById('musicToggle');
-    const sfxBtn = document.getElementById('sfxToggle');
-    const volumeSlider = document.getElementById('volumeSlider');
-
-    if (musicBtn) {
-        musicBtn.addEventListener('click', toggleMusic);
-    }
-
-    if (sfxBtn) {
-        sfxBtn.addEventListener('click', toggleSFX);
-    }
-
-    if (volumeSlider) {
-        volumeSlider.addEventListener('input', function() {
-            changeVolume(this.value);
-        });
-    }
-}
-
-// Toggle background music
-function toggleMusic() {
-    musicEnabled = !musicEnabled;
-    const btn = document.getElementById('musicToggle');
-    if (btn) {
-        btn.textContent = musicEnabled ? '🎵' : '🔇';
-    }
-
-    if (musicEnabled && musicPlaying) {
-        playBackgroundMusic();
-    } else {
-        stopBackgroundMusic();
-    }
-
-    playClickSound();
-}
-
-// Toggle sound effects
-function toggleSFX() {
-    sfxEnabled = !sfxEnabled;
-    const btn = document.getElementById('sfxToggle');
-    if (btn) {
-        btn.textContent = sfxEnabled ? '🔊' : '🔇';
-    }
-
-    playClickSound();
-}
-
-// Change volume
-function changeVolume(value) {
-    if (masterGain) {
-        masterGain.gain.value = value / 100;
-    }
-}
-
-// Play click sound
+/* ===================== SOUND EFFECTS ===================== */
 function playClickSound() {
-    if (!sfxEnabled || !audioContext) return;
+  if (!sfxEnabled || !audioContext) return;
 
-    try {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
 
-        oscillator.connect(gainNode);
-        gainNode.connect(masterGain);
+  oscillator.connect(gainNode);
+  gainNode.connect(masterGain);
 
-        oscillator.type = 'sine';
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+  oscillator.type = 'sine';
+  oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(600, audioContext.currentTime + 0.1);
 
-        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+  gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
 
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + 0.1);
-    } catch (error) {
-        console.log("Click sound error:", error);
-    }
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.1);
 }
 
-// Play eat sound
 function playEatSound() {
-    if (!sfxEnabled || !audioContext) return;
+  if (!sfxEnabled || !audioContext) return;
 
-    try {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
 
-        oscillator.connect(gainNode);
-        gainNode.connect(masterGain);
+  oscillator.connect(gainNode);
+  gainNode.connect(masterGain);
 
-        oscillator.type = 'square';
-        oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(1046, audioContext.currentTime + 0.1);
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+  oscillator.frequency.exponentialRampToValueAtTime(1046.50, audioContext.currentTime + 0.15); // C6
 
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+  gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
 
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + 0.2);
-    } catch (error) {
-        console.log("Eat sound error:", error);
-    }
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.2);
 }
 
-// Play game over sound
 function playGameOverSound() {
-    if (!sfxEnabled || !audioContext) return;
+  if (!sfxEnabled || !audioContext) return;
 
-    try {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
 
-        oscillator.connect(gainNode);
-        gainNode.connect(masterGain);
+  oscillator.connect(gainNode);
+  gainNode.connect(masterGain);
 
-        oscillator.type = 'sawtooth';
-        oscillator.frequency.setValueAtTime(349, audioContext.currentTime);
-        oscillator.frequency.exponentialRampToValueAtTime(174, audioContext.currentTime + 0.5);
+  oscillator.type = 'sawtooth';
+  oscillator.frequency.setValueAtTime(349.23, audioContext.currentTime); // F4
+  oscillator.frequency.exponentialRampToValueAtTime(174.61, audioContext.currentTime + 0.8); // F3
 
-        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.6);
+  gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8);
 
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + 0.6);
-    } catch (error) {
-        console.log("Game over sound error:", error);
-    }
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + 0.8);
 }
 
-// Play high score sound
 function playHighScoreSound() {
-    if (!sfxEnabled || !audioContext) return;
+  if (!sfxEnabled || !audioContext) return;
 
-    try {
-        // Play victory fanfare
-        const notes = [523, 659, 784, 1047];
-        const times = [0, 0.1, 0.2, 0.3];
+  // Cosmic victory fanfare
+  const notes = [
+    { freq: 523.25, time: 0, type: 'sine' },    // C5
+    { freq: 659.25, time: 0.1, type: 'square' }, // E5
+    { freq: 783.99, time: 0.2, type: 'sine' },  // G5
+    { freq: 1046.50, time: 0.3, type: 'square' }, // C6
+    { freq: 1318.51, time: 0.4, type: 'sine' }, // E6
+  ];
 
-        notes.forEach((freq, i) => {
-            setTimeout(() => {
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
+  notes.forEach(note => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
 
-                oscillator.connect(gainNode);
-                gainNode.connect(masterGain);
+    oscillator.connect(gainNode);
+    gainNode.connect(masterGain);
 
-                oscillator.type = 'sine';
-                oscillator.frequency.value = freq;
+    oscillator.type = note.type;
+    oscillator.frequency.value = note.freq;
 
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime + note.time);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + note.time + 0.3);
 
-                oscillator.start();
-                oscillator.stop(audioContext.currentTime + 0.2);
-            }, times[i] * 1000);
-        });
-    } catch (error) {
-        console.log("High score sound error:", error);
-    }
+    oscillator.start(audioContext.currentTime + note.time);
+    oscillator.stop(audioContext.currentTime + note.time + 0.3);
+  });
 }
-
-// Background music
-function playBackgroundMusic() {
-    if (!musicEnabled || !audioContext) return;
-
-    musicPlaying = true;
-
-    try {
-        // Simple arpeggio pattern
-        const notes = [262, 330, 392, 494];
-        let noteIndex = 0;
-
-        function playNextNote() {
-            if (!musicPlaying) return;
-
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-
-            oscillator.connect(gainNode);
-            gainNode.connect(masterGain);
-
-            oscillator.type = ['sine', 'square', 'triangle'][noteIndex % 3];
-            oscillator.frequency.value = notes[noteIndex % notes.length];
-
-            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-
-            oscillator.start();
-            oscillator.stop(audioContext.currentTime + 0.3);
-
-            noteIndex++;
-
-            // Schedule next note
-            setTimeout(playNextNote, 300);
-        }
-
-        playNextNote();
-    } catch (error) {
-        console.log("Background music error:", error);
-    }
-}
-
-function stopBackgroundMusic() {
-    musicPlaying = false;
-}
-
-// Unlock audio on user interaction
-function unlockAudio() {
-    if (audioContext && audioContext.state === 'suspended') {
-        audioContext.resume();
-    }
-}
-
-// Initialize on user interaction
-document.addEventListener('click', unlockAudio, { once: true });
-document.addEventListener('keydown', unlockAudio, { once: true });
-
-// Export functions for other files
-window.playClickSound = playClickSound;
-window.playEatSound = playEatSound;
-window.playGameOverSound = playGameOverSound;
-window.playHighScoreSound = playHighScoreSound;
-window.playBackgroundMusic = playBackgroundMusic;
-window.stopBackgroundMusic = stopBackgroundMusic;
-window.toggleMusic = toggleMusic;
-window.toggleSFX = toggleSFX;
-window.changeVolume = changeVolume;
