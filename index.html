@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game 🐍 | Cosmic Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Cosmic Background -->
+    <div class="cosmic-bg"></div>
+
+    <!-- Audio Controls -->
+    <div class="audio-controls">
+        <button class="audio-btn" id="musicToggle">🎵</button>
+        <button class="audio-btn" id="sfxToggle">🔊</button>
+        <input type="range" min="0" max="100" value="70" class="volume-slider" id="volumeSlider">
+    </div>
+
+    <!-- Main Game Container -->
+    <div class="game-container" id="gameContainer">
+        <!-- Home Screen -->
+        <div class="screen" id="homeScreen">
+            <h1>🐍 COSMIC SNAKE</h1>
+            <div class="subtitle">INTERGALACTIC ARCADE ADVENTURE</div>
+
+            <div class="menu">
+                <button onclick="showScreen('homeScreen')">🏠 HOME</button>
+                <button onclick="showScreen('aboutScreen')">🌌 ABOUT</button>
+                <button onclick="showScreen('helpScreen')">❓ HELP</button>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="score-display">
+                🌟 HIGH SCORE: <span id="highScoreDisplay">0</span>
+            </div>
+
+            <h2>SELECT DIFFICULTY</h2>
+            <div class="levels">
+                <button class="easy" onclick="startGame(150)">🌌 NEBULA (EASY)</button>
+                <button class="medium" onclick="startGame(100)">⚡ QUASAR (MEDIUM)</button>
+                <button class="hard" onclick="startGame(70)">🔥 SUPERNOVA (HARD)</button>
+            </div>
+        </div>
+
+        <!-- About Screen -->
+        <div class="screen hidden" id="aboutScreen">
+            <h2>🌌 ABOUT COSMIC SNAKE</h2>
+            <div class="divider"></div>
+            <p>An intergalactic twist on the classic snake game!</p>
+            <ul>
+                <li>✨ Cosmic visuals & effects</li>
+                <li>🎵 Synthesized space music</li>
+                <li>🌟 High score tracking</li>
+                <li>⚡ Smooth 60fps gameplay</li>
+                <li>🎮 Keyboard & touch controls</li>
+            </ul>
+            <button class="back-btn" onclick="showScreen('homeScreen')">← BACK</button>
+        </div>
+
+        <!-- Help Screen -->
+        <div class="screen hidden" id="helpScreen">
+            <h2>❓ HOW TO PLAY</h2>
+            <div class="divider"></div>
+            <ul>
+                <li>🎮 Use ARROW KEYS to move</li>
+                <li>📱 SWIPE on mobile devices</li>
+                <li>⏸️ Press SPACE to pause</li>
+                <li>🍎 Eat apples to grow</li>
+                <li>💥 Avoid walls & yourself</li>
+                <li>🎵 Toggle audio with controls</li>
+            </ul>
+            <button class="back-btn" onclick="showScreen('homeScreen')">← BACK</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div class="screen hidden" id="gameScreen">
+            <div class="score-display">
+                🎯 SCORE: <span id="currentScore">0</span> |
+                🌟 HIGH: <span id="gameHighScore">0</span>
+            </div>
+            <canvas id="gameCanvas" width="400" height="400"></canvas>
+            <button class="back-btn" onclick="exitGame()">← EXIT GAME</button>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div class="screen hidden" id="gameOverScreen">
+            <h1 class="game-over">💀 GAME OVER</h1>
+            <div class="divider"></div>
+            <p class="final-score">YOUR SCORE: <span id="finalScore">0</span></p>
+            <p id="newHighScoreMsg" class="hidden">🎉 NEW HIGH SCORE! 🎉</p>
+            <div class="game-over-buttons">
+                <button class="play-again" onclick="playAgain()">🔁 PLAY AGAIN</button>
+                <button class="home-btn" onclick="showScreen('homeScreen')">🏠 MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load JavaScript Files -->
+    <script src="audio.js"></script>
+    <script src="game.js"></script>
+    <script src="screens.js"></script>
+
+    <!-- Initialize Game -->
+    <script>
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initGame();
+            loadHighScore();
+        });
+    </script>
+</body>
+</html>
